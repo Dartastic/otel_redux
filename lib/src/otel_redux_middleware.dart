@@ -4,10 +4,10 @@
 import 'package:dartastic_opentelemetry/dartastic_opentelemetry.dart';
 import 'package:redux/redux.dart';
 
+import 'redux_semantics.dart';
 import 'redux_suppression.dart';
 
 const _tracerName = 'otel_redux';
-const _stateSystem = 'redux';
 
 /// Returns a Redux [Middleware] that opens an INTERNAL span around
 /// each dispatched action and forwards to the next dispatcher.
@@ -42,9 +42,9 @@ Middleware<S> otelReduxMiddleware<S>({Tracer? tracer}) {
       'redux $actionName',
       kind: SpanKind.internal,
       attributes: OTel.attributesFromMap(<String, Object>{
-        'state.system': _stateSystem,
-        'state.operation': 'dispatch',
-        'state.action.name': actionName,
+        ReduxSemantics.stateSystem.key: stateSystemRedux,
+        ReduxSemantics.stateOperation.key: stateOperationDispatch,
+        ReduxSemantics.stateActionName.key: actionName,
       }),
     );
     try {
@@ -52,7 +52,7 @@ Middleware<S> otelReduxMiddleware<S>({Tracer? tracer}) {
     } catch (e, st) {
       span.addAttributes(OTel.attributes([
         OTel.attributeString(
-          ErrorResource.errorType.key,
+          ErrorAttributes.errorType.key,
           e.runtimeType.toString(),
         ),
       ]));

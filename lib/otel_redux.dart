@@ -5,4 +5,5 @@
 library;
 
 export 'src/otel_redux_middleware.dart';
+export 'src/redux_semantics.dart';
 export 'src/redux_suppression.dart';

@@ -1,6 +1,15 @@
 # Changelog
 
-## [0.1.0-beta.2-wip]
+## [0.2.0-wip]
+
+### Added
+
+- `ReduxSemantics` enum (`state.system`, `state.operation`,
+  `state.action.name`) plus `stateSystemRedux` /
+  `stateOperationDispatch` value constants; the middleware and tests
+  now use these instead of raw string keys. Emitted keys unchanged.
+- Runnable example (`example/otel_redux_example.dart`).
+- Dartdoc for the zone-scoped suppression API.
 
 ## [0.1.0-beta.1] - 2026-05-16
 

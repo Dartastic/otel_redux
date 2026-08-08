@@ -81,9 +81,15 @@ void main() {
           ]));
 
       final attrs = _attrs(exporter.spans.first);
-      expect(attrs['state.system'], equals('redux'));
-      expect(attrs['state.operation'], equals('dispatch'));
-      expect(attrs['state.action.name'], equals('IncrementAction'));
+      expect(attrs[ReduxSemantics.stateSystem.key], equals(stateSystemRedux));
+      expect(
+        attrs[ReduxSemantics.stateOperation.key],
+        equals(stateOperationDispatch),
+      );
+      expect(
+        attrs[ReduxSemantics.stateActionName.key],
+        equals('IncrementAction'),
+      );
       expect(exporter.spans.first.kind, equals(SpanKind.internal));
     });
 
