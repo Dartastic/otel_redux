@@ -1,7 +1,7 @@
 // Licensed under the Apache License, Version 2.0
 // Copyright 2025, Mindful Software LLC, All rights reserved.
 
-import 'package:dartastic_opentelemetry/dartastic_opentelemetry.dart';
+import 'package:dartastic_opentelemetry_api/dartastic_opentelemetry_api.dart';
 import 'package:redux/redux.dart';
 
 import 'redux_semantics.dart';
@@ -30,8 +30,8 @@ const _tracerName = 'otel_redux';
 /// dispatches are sync, even though async work can be triggered
 /// inside thunk-like middleware). Exceptions in downstream
 /// middleware flip the span to Error and propagate.
-Middleware<S> otelReduxMiddleware<S>({Tracer? tracer}) {
-  final t = tracer ?? OTel.tracerProvider().getTracer(_tracerName);
+Middleware<S> otelReduxMiddleware<S>({APITracer? tracer}) {
+  final t = tracer ?? OTelAPI.tracerProvider().getTracer(_tracerName);
   return (Store<S> store, dynamic action, NextDispatcher next) {
     if (reduxInstrumentationSuppressed()) {
       next(action);
@@ -41,7 +41,7 @@ Middleware<S> otelReduxMiddleware<S>({Tracer? tracer}) {
     final span = t.startSpan(
       'redux $actionName',
       kind: SpanKind.internal,
-      attributes: OTel.attributesFromMap(<String, Object>{
+      attributes: OTelAPI.attributesFromMap(<String, Object>{
         ReduxSemantics.stateSystem.key: stateSystemRedux,
         ReduxSemantics.stateOperation.key: stateOperationDispatch,
         ReduxSemantics.stateActionName.key: actionName,
@@ -50,8 +50,8 @@ Middleware<S> otelReduxMiddleware<S>({Tracer? tracer}) {
     try {
       next(action);
     } catch (e, st) {
-      span.addAttributes(OTel.attributes([
-        OTel.attributeString(
+      span.addAttributes(OTelAPI.attributes([
+        OTelAPI.attributeString(
           ErrorAttributes.errorType.key,
           e.runtimeType.toString(),
         ),
